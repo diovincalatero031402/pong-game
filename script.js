@@ -211,6 +211,7 @@ function drawPaddle(paddle) {
 
 function drawBall() {
     ctx.fillStyle = '#ffff00';
+    ctx.strokeStyle = '#0099ff';
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
     ctx.fill();
