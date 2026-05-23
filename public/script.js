@@ -10,6 +10,10 @@ const paddleWidth = 15;
 const paddleHeight = 100;
 const ballSize = 16;
 
+// CHANGE BALL SPEED HERE
+
+const ballSpeedMultiplier = 3;
+
 let mySide = null;
 let connected = false;
 let gameEnded = false;
@@ -43,6 +47,13 @@ const ball = {
     y: canvas.height / 2,
     size: ballSize
 };
+
+// BALL SPEED
+
+let lastBallX = ball.x;
+let lastBallY = ball.y;
+
+let ballSpeed = 0;
 
 // SCORES
 
@@ -98,8 +109,24 @@ socket.on('state', (state) => {
         }
     });
 
+    // CALCULATE BALL SPEED
+
+    const dx = state.ball.x - lastBallX;
+    const dy = state.ball.y - lastBallY;
+
+    ballSpeed =
+        Math.sqrt(dx * dx + dy * dy)
+        * ballSpeedMultiplier;
+
+    lastBallX = state.ball.x;
+    lastBallY = state.ball.y;
+
+    // UPDATE BALL
+
     ball.x = state.ball.x;
     ball.y = state.ball.y;
+
+    // SCORES
 
     if (mySide === 'left') {
 
@@ -277,6 +304,7 @@ function draw() {
     );
 
     // SMOOTH ENEMY
+
     enemy.y +=
         (enemy.targetY - enemy.y) * 0.35;
 
@@ -296,12 +324,20 @@ function draw() {
 
     ctx.textAlign = 'center';
 
+    // BALL SPEED TEXT
+
+    ctx.fillText(
+        'Ball Speed: ' + ballSpeed.toFixed(2),
+        canvas.width / 2,
+        30
+    );
+
     if (!connected) {
 
         ctx.fillText(
             'Connecting...',
             canvas.width / 2,
-            30
+            60
         );
     }
 }
