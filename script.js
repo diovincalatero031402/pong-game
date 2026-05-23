@@ -167,7 +167,14 @@ if (ball.x < 0) {
     // Check win condition
     if (computerScore >= 10) {
             gameRunning = false;
-            alert('Computer Wins!');
+
+            Swal.fire({
+                title: 'Computer Wins!',
+                text: 'Better luck next time!',
+                icon: 'error',
+                confirmButtonText: 'Play Again'
+            });
+            
             document.getElementById('startBtn').textContent = 'Start Game';
         } else {
             resetBall();
@@ -181,7 +188,14 @@ if (ball.x < 0) {
         // Check win condition
         if (playerScore >= 10) {
             gameRunning = false;
-            alert('Player Wins!');
+
+            Swal.fire({
+                title: 'Player Wins!',
+                text: 'Congratulations!',
+                icon: 'success',
+                confirmButtonText: 'Awesome!'
+            });
+
             document.getElementById('startBtn').textContent = 'Start Game';
         } else {
             resetBall();
