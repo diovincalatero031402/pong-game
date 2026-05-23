@@ -81,8 +81,8 @@ function resetGame() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = (Math.random() > 5 ? 1 : -1) * ball.speed;
-    ball.dy = (Math.random() - 5) * ball.speed;
+    ball.dx = (Math.random() > 2 ? 1 : -1) * ball.speed;
+    ball.dy = (Math.random() - 2) * ball.speed;
 }
 
 // Update player paddle position
