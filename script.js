@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 // Game objects
 const paddleWidth = 15;
 const paddleHeight = 100;
-const ballSize = 25;
+const ballSize = 16;
 
 const player = {
     x: 20,
