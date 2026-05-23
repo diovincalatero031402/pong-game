@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Multiplayer Pong</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Multiplayer Pong</h1>
+
+        <!-- SCOREBOARD -->
+        <div class="scoreboard">
+
+            <div class="player-score">
+
+                <h2>You</h2>
+
+                <p id="playerScore">0</p>
+
+            </div>
+
+            <div class="divider">-</div>
+
+            <div class="computer-score">
+
+                <h2>Opponent</h2>
+
+                <p id="computerScore">0</p>
+
+            </div>
+
+        </div>
+
+        <!-- INFO -->
+        <div class="game-info">
+
+            <p>Click the canvas to lock your mouse.</p>
+
+            <p>Move your mouse up/down to control paddle.</p>
+
+            <p>First player to 15 wins.</p>
+
+            <p>Press ESC to unlock mouse.</p>
+
+        </div>
+
+        <!-- GAME CANVAS -->
+        <canvas id="gameCanvas"
+                width="800"
+                height="400"></canvas>
+
+        <!-- RESET BUTTON -->
+        <button id="resetBtn">
+            Reset Game
+        </button>
+
+    </div>
+
+    <!-- SOCKET.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- SWEET ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- GAME SCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
