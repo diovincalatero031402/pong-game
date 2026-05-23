@@ -165,14 +165,13 @@ if (ball.x < 0) {
     document.getElementById('computerScore').textContent = computerScore;
 
     // Check win condition
-    if (computerScore >= 10) {
+    if (computerScore >= 5) {
             gameRunning = false;
 
             Swal.fire({
                 title: 'Computer Wins!',
                 text: 'Better luck next time!',
-                icon: 'error',
-                confirmButtonText: 'Play Again'
+                icon: 'error'
             });
             
             document.getElementById('startBtn').textContent = 'Start Game';
@@ -186,14 +185,13 @@ if (ball.x < 0) {
         document.getElementById('playerScore').textContent = playerScore;
 
         // Check win condition
-        if (playerScore >= 10) {
+        if (playerScore >= 5) {
             gameRunning = false;
 
             Swal.fire({
                 title: 'Player Wins!',
                 text: 'Congratulations!',
-                icon: 'success',
-                confirmButtonText: 'Awesome!'
+                icon: 'success'
             });
 
             document.getElementById('startBtn').textContent = 'Start Game';
