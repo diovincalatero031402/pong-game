@@ -46,10 +46,16 @@ h1 {
     margin-bottom: 10px;
 }
 
-.player-score p, .computer-score p {
+.player-score p {
     font-size: 3em;
     font-weight: bold;
-    color: #764ba2;
+    color: #0099ff;
+}
+
+.computer-score p {
+    font-size: 3em;
+    font-weight: bold;
+    color: #F70000;
 }
 
 .divider {
