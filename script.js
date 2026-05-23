@@ -72,7 +72,7 @@ function resetGame() {
     playerScore = 0;
     computerScore = 0;
     document.getElementById('playerScore').textContent = '0';
-    document.getElementById('computerScore').textContent = '10';
+    document.getElementById('computerScore').textContent = '0';
     document.getElementById('startBtn').textContent = 'Start Game';
     resetBall();
 }
@@ -81,8 +81,8 @@ function resetGame() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = (Math.random() > 2 ? 1 : -1) * ball.speed;
-    ball.dy = (Math.random() - 2) * ball.speed;
+    ball.dx = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
+    ball.dy = (Math.random() * 2 - 1) * ball.speed;
 }
 
 // Update player paddle position
@@ -160,10 +160,32 @@ function updateBall() {
     }
 
     // Scoring
-    if (ball.x < 0) {
-        computerScore++;
-        document.getElementById('computerScore').textContent = computerScore;
-        resetBall();
+if (ball.x < 0) {
+    computerScore++;
+    document.getElementById('computerScore').textContent = computerScore;
+
+    // Check win condition
+    if (computerScore >= 10) {
+            gameRunning = false;
+            alert('Computer Wins!');
+            document.getElementById('startBtn').textContent = 'Start Game';
+        } else {
+            resetBall();
+        }
+    }
+
+    if (ball.x > canvas.width) {
+        playerScore++;
+        document.getElementById('playerScore').textContent = playerScore;
+
+        // Check win condition
+        if (playerScore >= 10) {
+            gameRunning = false;
+            alert('Player Wins!');
+            document.getElementById('startBtn').textContent = 'Start Game';
+        } else {
+            resetBall();
+        }
     }
 
     if (ball.x > canvas.width) {
@@ -177,10 +199,10 @@ function updateBall() {
 function drawPaddle(paddle) {
     if (paddle === player) {
         ctx.fillStyle = '#0099ff';
-        ctx.strokeStyle = 'FFFFFF';
+        ctx.strokeStyle = '#FFFFFF';
     } else {
         ctx.fillStyle = '#F70000';
-        ctx.strokeStyle = 'FFFFFF';
+        ctx.strokeStyle = '#FFFFFF';
     }
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     ctx.lineWidth = 2;
@@ -189,7 +211,7 @@ function drawPaddle(paddle) {
 
 function drawBall() {
     ctx.fillStyle = '#ffff00';
-    ctx.strokeStyle = '##0099ff';
+    ctx.strokeStyle = '#ff0000';
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
     ctx.fill();
