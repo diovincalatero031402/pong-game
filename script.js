@@ -82,7 +82,7 @@ function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
     ball.dx = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
-    ball.dy = (Math.random() - 0.5) * ball.speed;
+    ball.dy = (Math.random() - 1) * ball.speed;
 }
 
 // Update player paddle position
