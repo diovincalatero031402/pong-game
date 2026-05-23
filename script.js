@@ -68,16 +68,16 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 // Reset game
 function resetGame() {
-    playerScore = 0;
-    computerScore = 0;
+playerScore = 0;
+computerScore = 0;
 
-    document.getElementById('playerScore').textContent = '0';
-    document.getElementById('computerScore').textContent = '0';
+document.getElementById('playerScore').textContent = '0';
+document.getElementById('computerScore').textContent = '0';
 
-    resetBall();
+resetBall();
 
-    gameRunning = false;
-    document.getElementById('startBtn').textContent = 'Start Game';
+gameRunning = false;
+document.getElementById('startBtn').textContent = 'Start Game';
 }
 
 // Reset ball position
@@ -162,37 +162,43 @@ function updateBall() {
         ball.dy += hitPos * 2;
     }
 
-    // Scoring
-    if (ball.x < 0) {
-        computerScore++;
-        document.getElementById('computerScore').textContent = computerScore;
+// Scoring
+if (ball.x < 0) {
+    computerScore++;
+    document.getElementById('computerScore').textContent = computerScore;
 
-        gameRunning = false;
+    // Check win condition
+    if (computerScore >= 1) {
+            gameRunning = false;
 
-        Swal.fire({
+            Swal.fire({
             title: 'Computer Wins!',
             text: 'Better luck next time!',
             icon: 'error',
             confirmButtonText: 'Play Again'
-        }).then(() => {
+            }).then(() => {
             resetGame();
-        });
+            });
+        }
     }
 
     if (ball.x > canvas.width) {
         playerScore++;
         document.getElementById('playerScore').textContent = playerScore;
 
-        gameRunning = false;
+        // Check win condition
+        if (playerScore >= 1) {
+            gameRunning = false;
 
-        Swal.fire({
+            Swal.fire({
             title: 'Player Wins!',
             text: 'Congratulations!',
             icon: 'success',
             confirmButtonText: 'Play Again'
-        }).then(() => {
+            }).then(() => {
             resetGame();
-        });
+            });
+        }
     }
 }
 
