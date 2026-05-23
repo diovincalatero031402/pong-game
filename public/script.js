@@ -12,7 +12,7 @@ const ballSize = 16;
 
 // CHANGE BALL SPEED HERE
 
-const ballSpeedMultiplier = 8;
+const ballSpeedMultiplier = 10;
 
 let mySide = null;
 let connected = false;
