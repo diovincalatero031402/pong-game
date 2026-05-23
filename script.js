@@ -162,23 +162,25 @@ function updateBall() {
         ball.dy += hitPos * 2;
     }
 
-// Scoring
-if (ball.x < 0) {
-    computerScore++;
-    document.getElementById('computerScore').textContent = computerScore;
+    // Scoring
+    if (ball.x < 0) {
+        computerScore++;
+        document.getElementById('computerScore').textContent = computerScore;
 
-    // Check win condition
-    if (computerScore >= 10) {
+        // Check win condition
+        if (computerScore >= 10) {
             gameRunning = false;
 
             Swal.fire({
-            title: 'Computer Wins!',
-            text: 'Better luck next time!',
-            icon: 'error',
-            confirmButtonText: 'Play Again'
+                title: 'Computer Wins!',
+                text: 'Better luck next time!',
+                icon: 'error',
+                confirmButtonText: 'Play Again'
             }).then(() => {
-            resetGame();
+                resetGame();
             });
+        } else {
+            resetBall(); // IMPORTANT
         }
     }
 
@@ -191,13 +193,15 @@ if (ball.x < 0) {
             gameRunning = false;
 
             Swal.fire({
-            title: 'Player Wins!',
-            text: 'Congratulations!',
-            icon: 'success',
-            confirmButtonText: 'Play Again'
+                title: 'Player Wins!',
+                text: 'Congratulations!',
+                icon: 'success',
+                confirmButtonText: 'Play Again'
             }).then(() => {
-            resetGame();
+                resetGame();
             });
+        } else {
+            resetBall(); // IMPORTANT
         }
     }
 }
