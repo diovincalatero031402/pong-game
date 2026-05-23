@@ -32,6 +32,10 @@ let players = {};
 let scoreLeft = 0;
 let scoreRight = 0;
 
+// GAME STATE
+
+let gameStarted = false;
+
 // BALL
 
 let ball = {
@@ -59,6 +63,36 @@ function resetBall() {
         (Math.random() * 6) - 3;
 }
 
+// START COUNTDOWN
+
+function startGameCountdown() {
+
+    gameStarted = false;
+
+    let countdown = 3;
+
+    io.emit('countdown', countdown);
+
+    const timer = setInterval(() => {
+
+        countdown--;
+
+        if (countdown > 0) {
+
+            io.emit('countdown', countdown);
+
+        } else {
+
+            clearInterval(timer);
+
+            gameStarted = true;
+
+            io.emit('gameStart');
+        }
+
+    }, 1000);
+}
+
 // RESET GAME
 
 function resetGame() {
@@ -72,6 +106,11 @@ function resetGame() {
 
         p.y = HEIGHT / 2 - 50;
     });
+
+    if (Object.keys(players).length === 2) {
+
+        startGameCountdown();
+    }
 }
 
 // CONNECTION
@@ -101,6 +140,13 @@ io.on('connection', (socket) => {
 
     socket.emit('side', side);
 
+    // START GAME WHEN 2 PLAYERS CONNECT
+
+    if (Object.keys(players).length === 2) {
+
+        startGameCountdown();
+    }
+
     // MOVE
 
     socket.on('move', (y) => {
@@ -123,6 +169,10 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
 
         delete players[socket.id];
+
+        gameStarted = false;
+
+        console.log('Disconnected:', socket.id);
     });
 });
 
@@ -135,12 +185,15 @@ setInterval(() => {
         return;
     }
 
-    // MOVE BALL
+    // MOVE BALL ONLY AFTER GAME START
 
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    if (gameStarted) {
 
-    // WALLS
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+    }
+
+    // WALL COLLISION
 
     if (
         ball.y <= ball.size ||
@@ -196,6 +249,8 @@ setInterval(() => {
         }
 
         resetBall();
+
+        startGameCountdown();
     }
 
     // SCORE LEFT
@@ -212,6 +267,8 @@ setInterval(() => {
         }
 
         resetBall();
+
+        startGameCountdown();
     }
 
     // SEND STATE

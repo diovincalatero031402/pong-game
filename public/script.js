@@ -12,11 +12,16 @@ const ballSize = 16;
 
 // CHANGE BALL SPEED HERE
 
-const ballSpeedMultiplier = 3;
+const ballSpeedMultiplier = 8;
 
 let mySide = null;
 let connected = false;
 let gameEnded = false;
+
+// COUNTDOWN
+
+let countdown = 0;
+let countdownRunning = false;
 
 // PLAYER
 
@@ -88,6 +93,22 @@ socket.on('side', (side) => {
 
         enemy.x = 20;
     }
+});
+
+// COUNTDOWN
+
+socket.on('countdown', (num) => {
+
+    countdown = num;
+
+    countdownRunning = true;
+});
+
+// GAME START
+
+socket.on('gameStart', () => {
+
+    countdownRunning = false;
 });
 
 // SERVER FULL
@@ -331,6 +352,23 @@ function draw() {
         canvas.width / 2,
         30
     );
+
+    // COUNTDOWN TEXT
+
+    if (countdownRunning) {
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = '80px Arial';
+
+        ctx.textAlign = 'center';
+
+        ctx.fillText(
+            countdown,
+            canvas.width / 2,
+            canvas.height / 2
+        );
+    }
 
     if (!connected) {
 
