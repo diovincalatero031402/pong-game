@@ -71,8 +71,8 @@ function resetGame() {
     gameRunning = false;
     playerScore = 0;
     computerScore = 0;
-    document.getElementById('playerScore').textContent = '0';
-    document.getElementById('computerScore').textContent = '0';
+    document.getElementById('playerScore').textContent = '5';
+    document.getElementById('computerScore').textContent = '5';
     document.getElementById('startBtn').textContent = 'Start Game';
     resetBall();
 }
