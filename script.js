@@ -68,13 +68,16 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 // Reset game
 function resetGame() {
-    gameRunning = false;
     playerScore = 0;
     computerScore = 0;
+
     document.getElementById('playerScore').textContent = '0';
     document.getElementById('computerScore').textContent = '0';
-    document.getElementById('startBtn').textContent = 'Start Game';
+
     resetBall();
+
+    gameRunning = false;
+    document.getElementById('startBtn').textContent = 'Start Game';
 }
 
 // Reset ball position
@@ -160,52 +163,36 @@ function updateBall() {
     }
 
     // Scoring
-if (ball.x < 0) {
-    computerScore++;
-    document.getElementById('computerScore').textContent = computerScore;
+    if (ball.x < 0) {
+        computerScore++;
+        document.getElementById('computerScore').textContent = computerScore;
 
-    // Check win condition
-    if (computerScore >= 1) {
-            gameRunning = false;
+        gameRunning = false;
 
-            Swal.fire({
-                title: 'Computer Wins!',
-                text: 'Better luck next time!',
-                icon: 'error',
-                confirmButtonText: 'Play Again'
-            });
-            
-            document.getElementById('startBtn').textContent = 'Start Game';
-        } else {
-            resetBall();
-        }
+        Swal.fire({
+            title: 'Computer Wins!',
+            text: 'Better luck next time!',
+            icon: 'error',
+            confirmButtonText: 'Play Again'
+        }).then(() => {
+            resetGame();
+        });
     }
 
     if (ball.x > canvas.width) {
         playerScore++;
         document.getElementById('playerScore').textContent = playerScore;
 
-        // Check win condition
-        if (playerScore >= 1) {
-            gameRunning = false;
+        gameRunning = false;
 
-            Swal.fire({
-                title: 'Player Wins!',
-                text: 'Congratulations!',
-                icon: 'success',
-                confirmButtonText: 'Awesome!'
-            });
-
-            document.getElementById('startBtn').textContent = 'Start Game';
-        } else {
-            resetBall();
-        }
-    }
-
-    if (ball.x > canvas.width) {
-        playerScore++;
-        document.getElementById('playerScore').textContent = playerScore;
-        resetBall();
+        Swal.fire({
+            title: 'Player Wins!',
+            text: 'Congratulations!',
+            icon: 'success',
+            confirmButtonText: 'Play Again'
+        }).then(() => {
+            resetGame();
+        });
     }
 }
 
