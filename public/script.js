@@ -17,6 +17,8 @@ const ballSpeedMultiplier = 10;
 let mySide = null;
 let connected = false;
 let gameEnded = false;
+let gamePaused = false;
+let canStartGame = false;
 
 // COUNTDOWN
 
@@ -95,6 +97,17 @@ socket.on('side', (side) => {
     }
 });
 
+// SHOW START BUTTON
+
+socket.on('showStartButton', () => {
+
+    canStartGame = true;
+
+    document
+        .getElementById('startBtn')
+        .style.display = 'block';
+});
+
 // COUNTDOWN
 
 socket.on('countdown', (num) => {
@@ -109,6 +122,10 @@ socket.on('countdown', (num) => {
 socket.on('gameStart', () => {
 
     countdownRunning = false;
+
+    document
+        .getElementById('startBtn')
+        .style.display = 'none';
 });
 
 // SERVER FULL
@@ -116,6 +133,13 @@ socket.on('gameStart', () => {
 socket.on('full', () => {
 
     alert('Server full');
+});
+
+// RECEIVE PAUSE STATE
+
+socket.on('pauseState', (paused) => {
+
+    gamePaused = paused;
 });
 
 // GAME STATE
@@ -175,31 +199,53 @@ socket.on('gameOver', (data) => {
 
     gameEnded = true;
 
+    connected = false;
+
     const iWon =
         (mySide === data.winner);
 
     Swal.fire({
 
         title: iWon
-            ? 'You Win!'
-            : 'You Lost!',
+            ? 'You Win! 🎉'
+            : 'You Lost! 😢',
 
-        text: iWon
-            ? 'Congratulations!'
-            : 'Better luck next time!',
+        text: 'First to 15 points wins!',
 
         icon: iWon
             ? 'success'
             : 'error',
 
-        confirmButtonText: 'OK'
+        confirmButtonText: 'Play Again'
 
-    }).then(() => {
+    }).then((result) => {
 
-        socket.emit('resetGame');
+        if (result.isConfirmed) {
 
-        gameEnded = false;
+            socket.emit('resetGame');
+
+            playerScore = 0;
+            enemyScore = 0;
+
+            document.getElementById('playerScore').textContent = 0;
+            document.getElementById('computerScore').textContent = 0;
+
+            connected = true;
+            gameEnded = false;
+        }
     });
+});
+
+// START BUTTON
+
+document
+.getElementById('startBtn')
+.addEventListener('click', () => {
+
+    if (canStartGame) {
+
+        socket.emit('startGame');
+    }
 });
 
 // RESET BUTTON
@@ -225,13 +271,25 @@ canvas.addEventListener('click', async () => {
     }
 });
 
+// PAUSE WITH ESC
+
+document.addEventListener('keydown', (e) => {
+
+    if (e.key === 'Escape') {
+
+        socket.emit('pauseGame');
+    }
+});
+
 // MOUSE MOVEMENT
 
 document.addEventListener('mousemove', (e) => {
 
     if (
         document.pointerLockElement === canvas &&
-        connected
+        connected &&
+        !gamePaused &&
+        !gameEnded
     ) {
 
         player.y += e.movementY * 0.9;
@@ -365,6 +423,23 @@ function draw() {
 
         ctx.fillText(
             countdown,
+            canvas.width / 2,
+            canvas.height / 2
+        );
+    }
+
+    // PAUSED TEXT
+
+    if (gamePaused) {
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.font = '50px Arial';
+
+        ctx.textAlign = 'center';
+
+        ctx.fillText(
+            'PAUSED',
             canvas.width / 2,
             canvas.height / 2
         );

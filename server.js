@@ -35,6 +35,7 @@ let scoreRight = 0;
 // GAME STATE
 
 let gameStarted = false;
+let gamePaused = false;
 
 // BALL
 
@@ -100,6 +101,8 @@ function resetGame() {
     scoreLeft = 0;
     scoreRight = 0;
 
+    gamePaused = false;
+
     resetBall();
 
     Object.values(players).forEach((p) => {
@@ -109,7 +112,7 @@ function resetGame() {
 
     if (Object.keys(players).length === 2) {
 
-        startGameCountdown();
+        io.emit('showStartButton');
     }
 }
 
@@ -140,11 +143,11 @@ io.on('connection', (socket) => {
 
     socket.emit('side', side);
 
-    // START GAME WHEN 2 PLAYERS CONNECT
+    // SHOW START BUTTON WHEN 2 PLAYERS CONNECT
 
     if (Object.keys(players).length === 2) {
 
-        startGameCountdown();
+        io.emit('showStartButton');
     }
 
     // MOVE
@@ -157,7 +160,26 @@ io.on('connection', (socket) => {
         }
     });
 
-    // RESET
+    // START GAME BUTTON
+
+    socket.on('startGame', () => {
+
+        if (Object.keys(players).length === 2) {
+
+            startGameCountdown();
+        }
+    });
+
+    // PAUSE GAME
+
+    socket.on('pauseGame', () => {
+
+        gamePaused = !gamePaused;
+
+        io.emit('pauseState', gamePaused);
+    });
+
+    // RESET GAME
 
     socket.on('resetGame', () => {
 
@@ -171,6 +193,8 @@ io.on('connection', (socket) => {
         delete players[socket.id];
 
         gameStarted = false;
+
+        gamePaused = false;
 
         console.log('Disconnected:', socket.id);
     });
@@ -187,7 +211,7 @@ setInterval(() => {
 
     // MOVE BALL ONLY AFTER GAME START
 
-    if (gameStarted) {
+    if (gameStarted && !gamePaused) {
 
         ball.x += ball.dx;
         ball.y += ball.dy;
@@ -241,16 +265,22 @@ setInterval(() => {
 
         scoreRight++;
 
+        // CHECK WINNER
+
         if (scoreRight >= WINNING_SCORE) {
+
+            gameStarted = false;
 
             io.emit('gameOver', {
                 winner: 'right'
             });
+
+            return;
         }
 
         resetBall();
 
-        startGameCountdown();
+        io.emit('showStartButton');
     }
 
     // SCORE LEFT
@@ -259,16 +289,22 @@ setInterval(() => {
 
         scoreLeft++;
 
+        // CHECK WINNER
+
         if (scoreLeft >= WINNING_SCORE) {
+
+            gameStarted = false;
 
             io.emit('gameOver', {
                 winner: 'left'
             });
+
+            return;
         }
 
         resetBall();
 
-        startGameCountdown();
+        io.emit('showStartButton');
     }
 
     // SEND STATE

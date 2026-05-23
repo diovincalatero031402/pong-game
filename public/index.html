@@ -21,6 +21,7 @@
         <h1>Multiplayer Pong</h1>
 
         <!-- SCOREBOARD -->
+
         <div class="scoreboard">
 
             <div class="player-score">
@@ -44,6 +45,7 @@
         </div>
 
         <!-- INFO -->
+
         <div class="game-info">
 
             <p>Click the canvas to lock your mouse.</p>
@@ -52,16 +54,24 @@
 
             <p>First player to 15 wins.</p>
 
-            <p>Press ESC to unlock mouse.</p>
+            <p>Press ESC to pause/unpause the game.</p>
 
         </div>
 
         <!-- GAME CANVAS -->
+
         <canvas id="gameCanvas"
                 width="800"
                 height="400"></canvas>
 
+        <!-- START BUTTON -->
+
+        <button id="startBtn">
+            Start Game
+        </button>
+
         <!-- RESET BUTTON -->
+
         <button id="resetBtn">
             Reset Game
         </button>
@@ -69,12 +79,15 @@
     </div>
 
     <!-- SOCKET.IO -->
+
     <script src="/socket.io/socket.io.js"></script>
 
     <!-- SWEET ALERT -->
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- GAME SCRIPT -->
+
     <script src="script.js"></script>
 
 </body>
