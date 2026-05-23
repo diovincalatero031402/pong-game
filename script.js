@@ -168,7 +168,7 @@ if (ball.x < 0) {
     document.getElementById('computerScore').textContent = computerScore;
 
     // Check win condition
-    if (computerScore >= 1) {
+    if (computerScore >= 10) {
             gameRunning = false;
 
             Swal.fire({
@@ -187,7 +187,7 @@ if (ball.x < 0) {
         document.getElementById('playerScore').textContent = playerScore;
 
         // Check win condition
-        if (playerScore >= 1) {
+        if (playerScore >= 10) {
             gameRunning = false;
 
             Swal.fire({
