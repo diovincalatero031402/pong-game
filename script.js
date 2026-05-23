@@ -56,9 +56,69 @@ document.addEventListener('keyup', (e) => {
 // POINTER LOCK (Mouse Lock)
 // ==============================
 
-// Click canvas to lock mouse inside
+// Click canvas to lock mouse + 3 second countdown
 canvas.addEventListener('click', () => {
+
+    // Prevent restarting countdown while already running
+    if (gameRunning) {
+        return;
+    }
+
+    // Lock mouse
     canvas.requestPointerLock();
+
+    // Countdown
+    let countdown = 3;
+
+    // Create countdown display
+    const countdownEl = document.createElement('div');
+
+    countdownEl.id = 'countdown';
+
+    countdownEl.style.position = 'absolute';
+    countdownEl.style.top = '50%';
+    countdownEl.style.left = '50%';
+    countdownEl.style.transform = 'translate(-50%, -50%)';
+    countdownEl.style.fontSize = '120px';
+    countdownEl.style.fontWeight = 'bold';
+    countdownEl.style.color = '#ffffff';
+    countdownEl.style.textShadow = '0 0 20px #00ccff';
+    countdownEl.style.fontFamily = 'Arial';
+    countdownEl.style.zIndex = '999';
+
+    countdownEl.textContent = countdown;
+
+    document.body.appendChild(countdownEl);
+
+    // Countdown timer
+    const timer = setInterval(() => {
+
+        countdown--;
+
+        if (countdown > 0) {
+
+            countdownEl.textContent = countdown;
+
+        } else {
+
+            clearInterval(timer);
+
+            countdownEl.textContent = 'PLAY!';
+
+            // Start game after short GO display
+            setTimeout(() => {
+
+                countdownEl.remove();
+
+                gameRunning = true;
+
+                document.getElementById('startBtn').textContent =
+                    'Pause Game';
+
+            }, 500);
+        }
+
+    }, 1000);
 });
 
 // Mouse movement while locked
