@@ -37,6 +37,9 @@ let scoreRight = 0;
 let gameStarted = false;
 let gamePaused = false;
 
+let waitingForServe = false;
+let servingSide = null;
+
 // BALL
 
 let ball = {
@@ -44,24 +47,67 @@ let ball = {
     x: WIDTH / 2,
     y: HEIGHT / 2,
 
-    dx: 5,
-    dy: 4,
+    dx: 8,
+    dy: 6,
 
     size: 16
 };
 
 // RESET BALL
 
-function resetBall() {
+function resetBall(side = null) {
 
-    ball.x = WIDTH / 2;
-    ball.y = HEIGHT / 2;
+    // NORMAL CENTER RESET
 
-    ball.dx =
-        (Math.random() > 0.5 ? 5 : -5);
+    if (side === null) {
 
-    ball.dy =
-        (Math.random() * 6) - 3;
+        ball.x = WIDTH / 2;
+        ball.y = HEIGHT / 2;
+
+        ball.dx =
+            (Math.random() > 0.5 ? 8 : -8);
+
+        ball.dy =
+            (Math.random() * 8) - 6;
+
+        waitingForServe = false;
+
+        return;
+    }
+
+    // SERVE FROM PLAYER
+
+    const player =
+        Object.values(players)
+        .find(p => p.side === side);
+
+    if (!player) return;
+
+    // LEFT PLAYER SERVE
+
+    if (side === 'left') {
+
+        ball.x = 50;
+
+        ball.dx = 12;
+
+    } else {
+
+        // RIGHT PLAYER SERVE
+
+        ball.x = WIDTH - 50;
+
+        ball.dx = -12;
+    }
+
+    ball.y =
+        player.y + (PADDLE_HEIGHT / 2);
+
+    ball.dy = 0;
+
+    waitingForServe = true;
+
+    servingSide = side;
 }
 
 // START COUNTDOWN
@@ -87,6 +133,8 @@ function startGameCountdown() {
             clearInterval(timer);
 
             gameStarted = true;
+
+            resetBall();
 
             io.emit('gameStart');
         }
@@ -143,7 +191,7 @@ io.on('connection', (socket) => {
 
     socket.emit('side', side);
 
-    // SHOW START BUTTON WHEN 2 PLAYERS CONNECT
+    // SHOW START BUTTON
 
     if (Object.keys(players).length === 2) {
 
@@ -154,9 +202,20 @@ io.on('connection', (socket) => {
 
     socket.on('move', (y) => {
 
-        if (players[socket.id]) {
+        if (!players[socket.id]) return;
 
-            players[socket.id].y = y;
+        players[socket.id].y = y;
+
+        // THROW BALL WHEN SERVER MOVES
+
+        if (
+            waitingForServe &&
+            players[socket.id].side === servingSide
+        ) {
+
+            waitingForServe = false;
+
+            gameStarted = true;
         }
     });
 
@@ -196,6 +255,8 @@ io.on('connection', (socket) => {
 
         gamePaused = false;
 
+        waitingForServe = false;
+
         console.log('Disconnected:', socket.id);
     });
 });
@@ -209,9 +270,13 @@ setInterval(() => {
         return;
     }
 
-    // MOVE BALL ONLY AFTER GAME START
+    // MOVE BALL
 
-    if (gameStarted && !gamePaused) {
+    if (
+        gameStarted &&
+        !gamePaused &&
+        !waitingForServe
+    ) {
 
         ball.x += ball.dx;
         ball.y += ball.dy;
@@ -278,9 +343,11 @@ setInterval(() => {
             return;
         }
 
-        resetBall();
+        gameStarted = false;
 
-        io.emit('showStartButton');
+        // SERVE TO RIGHT PLAYER
+
+        resetBall('right');
     }
 
     // SCORE LEFT
@@ -302,9 +369,11 @@ setInterval(() => {
             return;
         }
 
-        resetBall();
+        gameStarted = false;
 
-        io.emit('showStartButton');
+        // SERVE TO LEFT PLAYER
+
+        resetBall('left');
     }
 
     // SEND STATE

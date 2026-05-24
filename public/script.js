@@ -12,13 +12,17 @@ const ballSize = 16;
 
 // CHANGE BALL SPEED HERE
 
-const ballSpeedMultiplier = 10;
+const ballSpeedMultiplier = 1;
 
 let mySide = null;
 let connected = false;
 let gameEnded = false;
 let gamePaused = false;
 let canStartGame = false;
+
+// FIRE TRAIL
+
+let ballTrail = [];
 
 // COUNTDOWN
 
@@ -350,9 +354,57 @@ function drawPaddle(paddle, color) {
     );
 }
 
-// DRAW BALL
+// DRAW BALL WITH FIRE EFFECT
 
 function drawBall() {
+
+    // ADD CURRENT POSITION TO TRAIL
+
+    ballTrail.push({
+        x: ball.x,
+        y: ball.y
+    });
+
+    // LIMIT TRAIL LENGTH
+
+    if (ballTrail.length > 15) {
+
+        ballTrail.shift();
+    }
+
+    // DRAW FIRE TRAIL
+
+    for (let i = 0; i < ballTrail.length; i++) {
+
+        const trail = ballTrail[i];
+
+        const alpha =
+            i / ballTrail.length;
+
+        const size =
+            ball.size * (i / ballTrail.length);
+
+        ctx.beginPath();
+
+        ctx.arc(
+            trail.x,
+            trail.y,
+            size,
+            0,
+            Math.PI * 2
+        );
+
+        // FIRE COLOR
+
+        ctx.fillStyle =
+            `rgba(255, ${
+                120 + i * 5
+            }, 0, ${alpha})`;
+
+        ctx.fill();
+    }
+
+    // MAIN BALL
 
     ctx.fillStyle = '#ffff00';
 
@@ -367,6 +419,30 @@ function drawBall() {
     );
 
     ctx.fill();
+
+    // GLOW EFFECT
+
+    ctx.shadowBlur = 30;
+
+    ctx.shadowColor = '#ff6600';
+
+    ctx.fillStyle = '#ffffff';
+
+    ctx.beginPath();
+
+    ctx.arc(
+        ball.x,
+        ball.y,
+        ball.size - 4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    // RESET SHADOW
+
+    ctx.shadowBlur = 0;
 }
 
 // DRAW
